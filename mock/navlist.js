@@ -80,7 +80,17 @@ var data = [
     {
         path: '/theme',
         name: '主题切换'
-    }
+    },
+    {
+        name: 'TCP',
+        child: [
+            {
+                path: '/tcpServer',
+                name: 'TCP SERVER',
+                permission: ['edit']
+            },
+        ]
+    },
 ]
 
 export default [{

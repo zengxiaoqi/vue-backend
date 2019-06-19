@@ -118,6 +118,16 @@ const staticRoute = [
         ]
     },
     {
+        path: '/tcpServer',
+        component: Layout,
+        children: [
+            {
+                path: '',
+                component: () => import('../page/TCP/TcpServer')
+            }
+        ]
+    },
+    {
         path: '*',
         redirect: '/error/404'
     }
