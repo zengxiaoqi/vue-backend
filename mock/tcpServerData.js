@@ -3,9 +3,16 @@ export default{
     data: {
         body: [
             {
-                'id': '1',
-                'ip': "127.0.0.1",
+
+                'id': "server-01",
                 'port': '2001',
+                'statue|1': ["启用", "断开"],
+                operation: 'edit,delete'
+            },
+            {
+
+                'id': "server-02",
+                'port': '2002',
                 'statue|1': ["启用", "断开"],
                 operation: 'edit,delete'
             }
