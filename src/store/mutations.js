@@ -21,5 +21,9 @@ export default {
     },
     setThemeColor(state, data){
         state.theme = data
-    }
+    },
+
+    setServerInfo(state, data) {
+        state.serverInfo.set(data.id, data);
+    },
 }

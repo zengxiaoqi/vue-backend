@@ -26,7 +26,7 @@
     <el-button type="primary" @click="addTcpServer" >新增</el-button>
     <el-button type="primary" @click="addTcpServer" >启动监听</el-button>
     <el-button type="primary" @click="addTcpServer" >停止监听</el-button>
-    <el-button type="primary" @click="addTcpServer" >发送数据</el-button>
+    <el-button type="primary" @click="sendData" >发送数据</el-button>
     <el-row>
         <el-col :span="12">
             <!-- 表格体 -->
@@ -55,10 +55,10 @@
             <el-form :model="editFormModel" label-width="80px" :rules="editFormRules" ref="editFormModel"
                      style="width:600px" :visible.sync="hasRowSelect">
                 <el-form-item label="接收消息：" prop="recvMsg" label-width="100px">
-                    <el-input type="textarea" :rows="10" v-model="editFormModel.recvMsg" :readonly="readonly"></el-input>
+                    <el-input type="textarea" :rows="10" v-model="recvMsg" :readonly="readonly"></el-input>
                 </el-form-item>
                 <el-form-item label="发送消息：" prop="sendMsg" label-width="100px">
-                    <el-input type="textarea" :rows="10" clearable v-model="editFormModel.sendMsg"></el-input>
+                    <el-input type="textarea" :rows="10" clearable v-model="sendMsg"></el-input>
                     <el-checkbox v-model="checkedHex">HEX</el-checkbox>
                 </el-form-item>
             </el-form>
@@ -91,7 +91,10 @@
 </div>
 </template>
 
+
 <script>
+import { mapState } from "vuex";
+
 export default {
     name: "TcpServer",
     data() {
@@ -101,7 +104,7 @@ export default {
                 text: ''
             },
             tableData: {
-                loading: true,
+                loading: true,  //v-loading在接口为请求到数据之前，显示加载中，直到请求到数据后消失
                 head: [],
                 body: []
             },
@@ -139,11 +142,16 @@ export default {
             hasRowSelect: false,
             currentRow: null,
             checkedHex: false,
-            serverInfo: new Map(), //Map 保存连接信息 Key=id value=tmpServerInfo
+            //serverInfo: new Map(), //Map 保存连接信息 Key=id value=tmpServerInfo
+            sendMsg: "",
+            recvMsg: "",
         }
     },
     mounted() {
         this.getTableData()
+    },
+    computed: {
+        ...mapState(["serverInfo"])
     },
     methods: {
         // 获取table数据
@@ -156,8 +164,11 @@ export default {
                 this.tableData.loading = false
                 this.tableData.head = res.head
                 this.tableData.body = res.body
+                res.body.forEach((value)=> {
+                    this.$store.commit("setServerInfo", value)
+                })
             }).catch(err => {
-                this.$message.error(`获取数据失败，失败码：${err.response.status}`)
+                this.$message.error(`获取数据失败，失败码：${err}`)
             })
         },
         search(){
@@ -193,7 +204,8 @@ export default {
             let model = _this.$refs.editFormModel.model;
 
             _this.setModel2Object(model);
-            _this.serverInfo.set(model.id, _this.tmpServerInfo);  //保存服务信息
+            _this.$store.commit("setServerInfo", _this.tmpServerInfo)
+            //_this.serverInfo.set(model.id, _this.tmpServerInfo);  //保存服务信息
 
             _this.$refs.editFormModel.validate(valid => {
                 if (valid) {
@@ -256,7 +268,31 @@ export default {
             let _this = this;
             _this.tmpServerInfo.id = model.id;
             _this.tmpServerInfo.port = model.port;
-        }
+        },
+        sendData() {
+            let _this = this;
+            if(_this.currentRow == null){
+                _this.$message({
+                    type: 'info',
+                    message: '请选择一行数据'
+                });
+                return;
+            }
+            var Id = _this.currentRow["id"];
+            var tmpDate = _this.serverInfo.get(Id);
+            tmpDate.sendMsg = _this.sendMsg;
+            let url = "";
+            let params = {};
+            url = "/sendData";
+            _this.commonSubmit(
+                "post",
+                url,
+                tmpDate,
+                params,
+                "发送成功",
+                "发送失败"
+            );
+        },
     },
 }
 </script>
