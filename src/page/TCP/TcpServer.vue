@@ -5,7 +5,7 @@
         <el-form :inline="true" :model="searchForm">
             <el-form-item>
                 <el-select v-model="searchForm.type" placeholder="下拉选择">
-                    <el-option label="IP" value="ip"></el-option>
+                    <el-option label="ID" value="id"></el-option>
                     <el-option label="端口" value="port"></el-option>
                     <el-option label="状态" value="statue"></el-option>
                 </el-select>
@@ -28,7 +28,7 @@
     <el-button type="primary" @click="addTcpServer" >停止监听</el-button>
     <el-button type="primary" @click="sendData" >发送数据</el-button>
     <el-row>
-        <el-col :span="12">
+        <el-col :span="10">
             <!-- 表格体 -->
             <table-mixin pagination paginationAlign="center" style="width:500px">
                 <el-table v-loading="tableData.loading" :data="tableData.body" border :default-sort="{prop: 'index', order: 'descending'}"
@@ -51,8 +51,23 @@
         <!--<el-col :span="4">
             <el-divider direction="vertical" style="color: #303133"></el-divider>
         </el-col>-->
-        <el-col :span="12">
-            <el-form :model="editFormModel" label-width="80px" :rules="editFormRules" ref="editFormModel"
+        <!-- 分割线 -->
+        <!--<el-col :span="4">
+            &lt;!&ndash;<hr style="width:2px;height:100px; "></hr>&ndash;&gt;
+            <div id='three_dot_view'>
+                <label class="gray_line"></label>
+            </div>
+        </el-col>-->
+
+        <el-col :span="10">
+            <div v-if="hasRowSelect">
+                接收消息:
+                <el-input type="textarea" :rows="10" v-model="recvMsg" :readonly="readonly"></el-input>
+                发送消息：
+                <el-input type="textarea" :rows="10" clearable v-model="sendMsg"></el-input>
+                <el-checkbox v-model="checkedHex">HEX</el-checkbox>
+            </div>
+            <!--<el-form :model="editFormModel" label-width="80px" :rules="editFormRules" ref="editFormModel"
                      style="width:600px" :visible.sync="hasRowSelect">
                 <el-form-item label="接收消息：" prop="recvMsg" label-width="100px">
                     <el-input type="textarea" :rows="10" v-model="recvMsg" :readonly="readonly"></el-input>
@@ -61,7 +76,7 @@
                     <el-input type="textarea" :rows="10" clearable v-model="sendMsg"></el-input>
                     <el-checkbox v-model="checkedHex">HEX</el-checkbox>
                 </el-form-item>
-            </el-form>
+            </el-form>-->
         </el-col>
     </el-row>
 
@@ -138,7 +153,7 @@ export default {
                 id: [{ required: true, message: "该输入项为必填项!" }],
                 port: [{ required: true, message: "该输入项为必填项!" }],
             },
-            readonly: false,
+            readonly: true,
             hasRowSelect: false,
             currentRow: null,
             checkedHex: false,
@@ -298,5 +313,16 @@ export default {
 </script>
 
 <style scoped>
+    #three_dot_view {
+        width: 20px;
+        height: 400px;
+    }
 
+    .gray_line {
+        background: #e5e5e5;
+        width: 20px;
+        height: 400px;
+        float: left;
+        margin: 10px 5px;
+    }
 </style>

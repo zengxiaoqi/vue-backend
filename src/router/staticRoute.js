@@ -128,6 +128,16 @@ const staticRoute = [
         ]
     },
     {
+        path: '/formatStr',
+        component: Layout,
+        children: [
+            {
+                path: '',
+                component: () => import('../page/strformat/StrFormat')
+            }
+        ]
+    },
+    {
         path: '*',
         redirect: '/error/404'
     }

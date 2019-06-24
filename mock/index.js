@@ -7,8 +7,9 @@ import groupList from './groupList'
 import getToken from './getToken'
 import tcpServerData from './tcpServerData'
 import createServer from './createServer'
+import formatStr from './formatStr'
 
-let data = [].concat(navlist, login, echarts, table, groupList, getToken, tcpServerData,createServer)
+let data = [].concat(navlist, login, echarts, table, groupList, getToken, tcpServerData,createServer,formatStr)
 
 data.forEach(function(res){
     Mock.mock(res.path, res.data)

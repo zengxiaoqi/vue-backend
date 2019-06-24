@@ -91,6 +91,16 @@ var data = [
             },
         ]
     },
+    {
+        name: '小工具',
+        child: [
+            {
+                path: '/formatStr',
+                name: '字符串格式化',
+                permission: ['edit']
+            },
+        ]
+    },
 ]
 
 export default [{
